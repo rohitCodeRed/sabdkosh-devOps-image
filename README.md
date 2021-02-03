@@ -360,10 +360,10 @@ I have already my expressjs project in github repository.
 
 ```shell
 $ node -v
-v8.9.4
+v14.15.4
 
 $ npm -v
-6.1.0
+6.14.11
 
 ```
 
@@ -383,11 +383,11 @@ Let discuss about folder:
 ```shell
 $ node index.js 
 (node:14601) DeprecationWarning: Mongoose: mpromise (mongoose's default promise library) is deprecated, plug in your own promise library instead: http://mongoosejs.com/docs/promises.html
-Example app listening on port: 3000
+Example app listening on port: 3001
 failed to connect to server [localhost:27017] on first connect [MongoError: connect ECONNREFUSED 127.0.0.1:27017]
 
 ```
-Server is started on port 3000, By hitting http://localhost:3000, web page look like:
+Server is started on port 3001, By hitting http://localhost:3001, web page look like:
 
 ![](https://i.imgur.com/7XNeEHD.png)
 ![](https://i.imgur.com/c2cbpEM.png)
@@ -401,7 +401,7 @@ Above, it's all about basic static server info are showing with help of **npm** 
 Let's create a Dockerfile for node app.
 **Docker** file look's like:
 ```Dockerfile
-FROM node:8
+FROM node:14.15.4
 WORKDIR /node_app
 COPY . /node_app
 RUN npm install
@@ -414,10 +414,10 @@ Now built it..
 $ docker build -t node_image ~/DevsOpsImage/nodeServer/
 
 Sending build context to Docker daemon 29.58 MB
-Step 1/6 : FROM node:8
+Step 1/6 : FROM node:14.15.4
 8: Pulling from library/node
 Digest: sha256:3422df4f7532b26b55275ad7b6dc17ec35f77192b04ce22e62e43541f3d28eb3
-Status: Downloaded newer image for node:8
+Status: Downloaded newer image for node:14.15.4
  ---> 8198006b2b57
 Step 2/6 : WORKDIR /node_app
  ---> b1a3bb04379c
@@ -500,7 +500,7 @@ ff02::2	ip6-allrouters
 ```
 :::
 
-### Requesting REST api of Node Server
+### Requesting REST api of Node Server (Only work when MongoDB is connected )
 **1. Register API**
 :::success
 * Url: "http://localhost:3001/api/apiAcess/register"
@@ -697,7 +697,7 @@ Angular app look like:
 ```Dockerfile
 FROM nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY dist/ /usr/share/nginx/html
+COPY dist/angularCli/ /usr/share/nginx/html
 
 ```
 As you can see we are copying all the files from our dist folder and we are also replacing the Nginx configuration with our own custom configuration (like the one below)
@@ -721,6 +721,7 @@ After creation of Dockerfile, let's create it's image
 * In source directory, run the command
 
 ```shell
+$ ng build
 $ docker build -t angular_app_image .
 ```
 **Running a Docker Image of angular app**
@@ -775,18 +776,72 @@ ff02::2	ip6-allrouters
 
 Now both node server (http://localhost:3001) and angular app (http://localhost:4200) is running and linked. :tada:
 
-## Build, Run and link all three Images
-* **mongo_server**
-:::info
-It's mongoDB server image, which is document database with the scalability and flexibility that you want with the querying and indexing that you need.
-:::
-* **node_image**
-:::info
-It's node server image, which is based on Node.js framework.
-:::
-* **angular_app_image**
-:::info
-It's angular image. Angular is a platform that makes it easy to build applications with the web
-:::
+## Build, Run and link all three Images From scratch
+Right now, we have both **Angular** and **Node** project are in **Git hub**. Let's pull both project and build it's image
 
-//TODO......
+* **angular_app_image** 
+```shell 
+ $ git clone https://github.com/rohitCodeRed/angularCli.git
+ $ cd angularCli
+ $ npm install
+ $ ng build
+ $ docker build -t angular_app_image .
+ 
+```
+
+* **node_app_image**
+```shell
+ $ git clone https://github.com/rohitCodeRed/NodeServer.git
+ $ cd NodeServer
+ $ npm install
+ $ docker build -t node_app_image .
+```
+
+* **mongo**
+For **mongo** image, we can directly pull from docker official page.
+```shell
+$ docker pull mongo
+```
+
+Now we have all three images available at our local, let's create and run **docker-compose.yml** file.
+* Please install**docker-compose** before running.
+
+```
+services:
+  node_app:
+    container_name: node_app
+    restart: always
+    image: node_app_image
+    ports:
+      - "3001:3001"
+    links:
+      - mongo:database
+  mongo:
+    container_name: mongo
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017:27017"
+  angular_app:
+    container_name: angular_app
+    restart: always
+    image: angular_app_image
+    ports:
+      - "4200:80"
+    links:
+      - node_app
+
+```
+
+Let run the .yml file.
+```shell
+$ docker-compose up
+```
+This above command will show all running container logs in one terminal.
+After that, Angular app will run on http://localhost:4200 and Node app will run on http://localhost:3001.
+
+
+
+## Build, Run and link all three Images with Jenkin Docker Image
+//Todo..
