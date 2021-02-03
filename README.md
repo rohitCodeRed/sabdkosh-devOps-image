@@ -402,11 +402,13 @@ Let's create a Dockerfile for node app.
 **Docker** file look's like:
 ```Dockerfile
 FROM node:14.15.4
-WORKDIR /node_app
-COPY . /node_app
+RUN mkdir -p /usr/src/app
+COPY . /usr/src/app/
+WORKDIR /usr/src/app
+RUN ls -al
 RUN npm install
-CMD node index.js
 EXPOSE 3001
+CMD ["node", "index.js"]
 ```
 * All Code of node app are stored in ~/DevsOpsImage/nodeSrever directory.
 Now built it..
