@@ -789,38 +789,4 @@ It's node server image, which is based on Node.js framework.
 It's angular image. Angular is a platform that makes it easy to build applications with the web
 :::
 
-###
-
-**Desktop & Tablet**
-
-<i class="fa fa-edit fa-fw"></i> Edit: See only the editor.
-<i class="fa fa-eye fa-fw"></i> View: See only the result.
-<i class="fa fa-columns fa-fw"></i> Both: See both in split view.
-
-**Mobile**
-
-<i class="fa fa-toggle-on fa-fw"></i> View: See only the result.
-<i class="fa fa-toggle-off fa-fw"></i> Edit: See only the editor.
-
-
-
-## Images
-
-![Minion](https://octodex.github.com/images/minion.png =200x200)
-Show the image with given size
-
-## Footnotes
-
-Footnote 1 link[^first].
-Footnote 2 link[^second].
-Inline footnote^[Text of inline footnote] definition.
-Duplicated footnote reference[^second].
-
-[^first]: Footnote **can have markup**
-    and multiple paragraphs.
-[^second]: Footnote text.
-
-
-
-*[HTML]: Hyper Text Markup Language
-
+//TODO......
