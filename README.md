@@ -88,15 +88,49 @@ Docker install as a root privilages, to get rid of sudo follow link: https://doc
 ## Installing and Running Jenkin Image as Master Docker Container
 Go to jenkins website (https://jenkins.io/doc/book/getting-started/installing/) and find “Docker” section.All the options are briefly explained.
 ``` shell
-$ docker run \
-  -u root \
-  --rm \
-  -d \
-  -p 8080:8080 \
-  -p 50000:50000 \
-  -v jenkins-data:/var/jenkins_home \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  jenkinsci/blueocean  
+$ docker network create jenkins
+
+$ docker run --name jenkins-docker --rm --detach \
+  --privileged --network jenkins --network-alias docker \
+  --env DOCKER_TLS_CERTDIR=/certs \
+  --volume jenkins-docker-certs:/certs/client \
+  --volume jenkins-data:/var/jenkins_home \
+  --publish 2376:2376 docker:dind
+  
+```
+Create Dockerfile with the following content:
+
+```
+FROM jenkins/jenkins:2.263.3-lts-jdk11
+USER root
+RUN apt-get update && apt-get install -y apt-transport-https \
+       ca-certificates curl gnupg2 \
+       software-properties-common
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+RUN apt-key fingerprint 0EBFCD88
+RUN add-apt-repository \
+       "deb [arch=amd64] https://download.docker.com/linux/debian \
+       $(lsb_release -cs) stable"
+RUN apt-get update && apt-get install -y docker-ce-cli
+USER jenkins
+ # RUN jenkins-plugin-cli --plugins blueocean:1.24.4  # blueocean is not required
+```
+
+Build a new docker image from this Dockerfile and assign the image a meaningful name, e.g. "sabdkosh-jenkins":
+```shell
+$ docker build -t sabdkosh-jenkins .
+```
+
+Then run sabdkosh-jenkins image container
+
+```shell
+$ docker run --name sabdkosh-jenkins-container --rm --detach \
+  --network jenkins --env DOCKER_HOST=tcp://docker:2376 \
+  --env DOCKER_CERT_PATH=/certs/client --env DOCKER_TLS_VERIFY=1 \
+  --publish 8080:8080 --publish 50000:50000 \
+  --volume jenkins-data:/var/jenkins_home \
+  --volume jenkins-docker-certs:/certs/client:ro \
+  sabdkosh-jenkins
 ```
 
 :::info
@@ -118,25 +152,21 @@ This may also be found at: /var/jenkins_home/secrets/initialAdminPassword
 :::
 
 Finally, I installed the suitable plugins.
-::: info
-After plugins installation, you can create new image with same settings as default "jenkinsci/blueocean" image.:mega:
-Command used:
+
 ``` shell
 $ docker container ls
 
-CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS                                              NAMES
-4ff91266d7ab        jenkinsci/blueocean   "/sbin/tini -- /us..."   31 seconds ago      Up 27 seconds       0.0.0.0:8080->8080/tcp, 0.0.0.0:50000->50000/tcp   youthful_noether
+CONTAINER ID   IMAGE              COMMAND                  CREATED             STATUS             PORTS                                              NAMES
+b92d3becccc6   sabdkosh-jenkins   "/sbin/tini -- /usr/…"   About an hour ago   Up About an hour   0.0.0.0:8080->8080/tcp, 0.0.0.0:50000->50000/tcp   sabdkosh-jenkins-container
+194da4603b60   docker:dind        "dockerd-entrypoint.…"   About an hour ago   Up About an hour   2375/tcp, 0.0.0.0:2376->2376/tcp                   jenkins-docker
 
-$ docker commit 4ff91266d7ab master_jenkins
-
-sha256:b8a9e8c5ebe3d5a0aaf1febea2a6189761eff0ca76961430aa0ea7367e125617
 
 $ docker image ls
 
-REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
-master_jenkins        latest              b8a9e8c5ebe3        14 seconds ago      436 MB
-jenkinsci/blueocean   latest              f04e14ab531d        6 days ago          433 MB
-hello-world           latest              e38bc07ac18e        3 months ago        1.85 kB
+REPOSITORY                                  TAG                 IMAGE ID       CREATED          SIZE
+sabdkosh-jenkins                            latest              e8d46dc7be01   34 seconds ago   1.01GB
+docker                                      dind                d1a6345c23f3   3 days ago       257MB
+jenkins/jenkins                             2.263.3-lts-jdk11   f50504bf2e45   10 days ago      681MB
 ```
 :::
 
@@ -145,8 +175,7 @@ hello-world           latest              e38bc07ac18e        3 months ago      
 >**/var/lib/docker/image/repository.json**
 > * Also jenkin package at **/var/lib/docker/volume/jenkin-data**.
 
-
-### Running hello-world Slave Image from jenkins Master Container
+### Running hello-world Image from jenkins Container
 
 After login into jenkins, let's create our own pipeline.
 :::info
