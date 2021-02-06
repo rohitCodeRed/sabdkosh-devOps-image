@@ -85,7 +85,7 @@ Images: 1
 ```
 Docker install as a root privilages, to get rid of sudo follow link: https://docs.docker.com/install/linux/linux-postinstall/.
 
-## Installing and Running Jenkin Image as Master Docker Container
+## Installing and Running Jenkin Image as Docker Container
 Go to jenkins website (https://jenkins.io/doc/book/getting-started/installing/) and find “Docker” section.All the options are briefly explained.
 ``` shell
 $ docker network create jenkins
