@@ -12,7 +12,7 @@ pipeline {
         pwd
         rm -rf sabdkosh-devOps-image
         node -v
-        echo "script is ended.. with testing"
+        echo "script is ended.. with testing more"
         '''
       }
     }
