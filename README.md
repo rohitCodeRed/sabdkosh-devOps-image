@@ -874,5 +874,18 @@ After that, Angular app will run on http://localhost:4200 and Node app will run 
 
 
 
-## Build, Run and link all three Images with Jenkin Docker Image
+## Build, Run AngularCli and NodeServer Project with Jenkins Docker Image
+* After running jenkins with docker, got UI at http://localhost:8080
+
+![](https://i.imgur.com/74hx8Vy.png)
+
+* Created two new jobs **AngularCli_Project** and **NodeServer_Project**
+* Attach webhook in their git hub repository:
+ **AngularCli_Project** : https://github.com/rohitCodeRed/angularCli.git
+ **NodeServer_Project** : https://github.com/rohitCodeRed/NodeServer.git
+ 
+ Like this in **Git Hub**:
+ ![](https://i.imgur.com/UuWnxnD.png)
+
+* I used ngrok(https://ngrok.com/) software to make localhost:8080 online.
 //Todo..
