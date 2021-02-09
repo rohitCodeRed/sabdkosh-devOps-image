@@ -888,4 +888,99 @@ After that, Angular app will run on http://localhost:4200 and Node app will run 
  ![](https://i.imgur.com/UuWnxnD.png)
 
 * I used ngrok(https://ngrok.com/) software to make localhost:8080 online.
+
+### Jenkinsfile in NodeServer project
+```shell
+pipeline {
+    agent {
+        docker {
+            image 'node:14.15.4'
+            args '-p 3001:3001'
+        }
+    }
+    environment { 
+        CI = 'true'
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Deliver') { 
+            steps {
+                sh './jenkins/scripts/deliver.sh' 
+                input message: 'Finished using the web site? (Click "Proceed" to continue)' 
+                sh './jenkins/scripts/kill.sh' 
+            }
+        }
+    }
+}
+```
+* Please refer to https://www.jenkins.io/doc/tutorials/build-a-node-js-and-react-app-with-npm/
+* After any code push to master branch, it will trigger jenkins pipeline job **NodeServer_Project**.
+Screenshots are:
+
+
+![](https://i.imgur.com/AFyMI4F.png)
+
+![](https://i.imgur.com/6g1Q20A.png)
+
+![](https://i.imgur.com/Qyk7tM9.png)
+
+
+
+
+
+### Jekinsfile in angularCli project
+
+```shell
+pipeline {
+    agent {
+        docker {
+            image 'node:14.15.4'
+            args '-p 4200:4200'
+        }
+    }
+    environment { 
+        CI = 'true'
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'npm install'
+                sh 'npx -p @angular/cli@11.1.0 ng --help'
+                sh 'npx -p @angular/cli@11.1.0 ng build'
+            }
+        }
+        stage('Deliver') { 
+            steps {
+                sh './jenkins/scripts/deliver.sh' 
+                input message: 'Finished using the web site? (Click "Proceed" to continue)' 
+                sh './jenkins/scripts/kill.sh' 
+            }
+        }
+    }
+}
+```
+* It uses docker image **node:14.15.4** to build and run AngularCli project.
+* After any code push to master branch, it will trigger jenkins pipeline job **AngularCli_Project**.
+Screenshots are:
+
+
+![](https://i.imgur.com/AF65b8B.png)
+
+![](https://i.imgur.com/HEdYLXA.png)
+
+![](https://i.imgur.com/1NSvimG.png)
+
+
+### Final Job View
+
+![](https://i.imgur.com/Dv81QVJ.png)
+
+* All images regarding jenkins are pushed to docker hub repositories:
+1. **docker0605/sabdkosh-jenkins-image** (https://hub.docker.com/r/docker0605/sabdkosh-jenkins-image)
+2. **docker0605/sabdkosh-docker-dind** (https://hub.docker.com/r/docker0605/sabdkosh-docker-dind)
+
 //Todo..
