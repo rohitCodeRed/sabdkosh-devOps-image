@@ -12,6 +12,9 @@ docker build -t node_app_image .
 
 cd ..
 
+##remove folder
+rm -rf NodeServer/
+
 #clone Angular project
 git clone https://github.com/rohitCodeRed/angularCli.git
 
@@ -25,6 +28,9 @@ npx -p @angular/cli@11.1.0 ng build
 docker build -t angular_app_image .
 
 cd ..
+
+##remove folder
+rm -rf angularCli/
 
 
 ## Finally run deployment script...

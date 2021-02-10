@@ -8,6 +8,14 @@ What we gonna Develop?
 > * We will be developing **Mean** App  with angular 2 with automated code push, build, testing and Deploy by **Jenkins Tools** and **Docker**.
 > * At the end, will create it's **Docker** image.
 
+### Git Hub Repository used:
+https://github.com/rohitCodeRed/angularCli
+https://github.com/rohitCodeRed/NodeServer
+https://github.com/rohitCodeRed/sabdkosh-devOps-image
+
+### Static Web project link:
+https://ng-tabula.firebaseapp.com/
+
 ## Introduction
 
 <i class="fa fa-file-text"></i> **DevOps** (a clipped compound of "development" and "operations") is a software engineering culture and practice that aims at unifying software development (Dev) and software operation (Ops).
@@ -983,4 +991,39 @@ Screenshots are:
 1. **docker0605/sabdkosh-jenkins-image** (https://hub.docker.com/r/docker0605/sabdkosh-jenkins-image)
 2. **docker0605/sabdkosh-docker-dind** (https://hub.docker.com/r/docker0605/sabdkosh-docker-dind)
 
-//Todo..
+## Deployment Scripts
+Script which build and run docker images of mongoDB, nodeJs and angular project in one go.
+
+**Required Softaware installed**
+1. *Docker*
+2. *Node*
+3. *Git*
+
+**Steps**:
+* Clone the git project: https://github.com/rohitCodeRed/sabdkosh-devOps-image.git
+```shell
+$ git clone https://github.com/rohitCodeRed/sabdkosh-devOps-image.git
+```
+* Go to directory sabdkosh-devOps-image/
+```shell
+$ cd sabdkosh-devOps-image/
+```
+* Run the deploymentScript.sh script
+```shell
+$ sh deploymentScript.sh
+```
+
+Now above script automatically clone the project , build it and run it on local server.
+
+**Results**
+* **Node** project will run on http://localhost:3001
+* **Angular** project will run on http://localhost:4200
+* **MongoDb** will run on mongo://database:27017
+
+
+
+![Minion](https://octodex.github.com/images/minion.png =200x200)
+
+#### Thank you
+
+
