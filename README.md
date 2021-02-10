@@ -1022,7 +1022,7 @@ Now above script automatically clone the project , build it and run it on local 
 
 
 
-![](https://tenor.com/view/thank-you-pikachu-gif-15371199)
+![](https://images.app.goo.gl/WmVvwjjJ6Pve3T6EA)
 
 #### Thank you
 
