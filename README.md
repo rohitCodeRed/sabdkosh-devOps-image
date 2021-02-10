@@ -1022,7 +1022,7 @@ Now above script automatically clone the project , build it and run it on local 
 
 
 
-![](https://images.app.goo.gl/WmVvwjjJ6Pve3T6EA)
+![pickachu](https://user-images.githubusercontent.com/35483024/107481693-9d222000-6ba4-11eb-9abe-fa482fa9b74f.gif)
 
 #### Thank you
 
