@@ -1022,7 +1022,7 @@ Now above script automatically clone the project , build it and run it on local 
 
 
 
-![Minion](https://octodex.github.com/images/minion.png =200x200)
+![](https://tenor.com/view/thank-you-pikachu-gif-15371199)
 
 #### Thank you
 
